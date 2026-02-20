@@ -72,15 +72,6 @@
                             </button>
                         </div>
                     </form>
-
-                    <div class="text-center mt-10">
-                        <!-- <p class="text-gray-400 fw-bold fs-6">
-                            Demo Credentials:<br>
-                            Superadmin: superadmin@gmail.com / 123<br>
-                            Petugas: petugas@gmail.com / 123 <br>
-                            Surveyor: surveyor@gmail.com / 123
-                        </p> -->
-                    </div>
                 </div>
             </div>
             
