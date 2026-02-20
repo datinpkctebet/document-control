@@ -5,7 +5,7 @@
 @section('page_description', 'Kelola dokumen internal')
 
 @section('toolbar_actions')
-@if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+@if(auth()->user()->isSuperadmin())
 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadDokumen">
     <span class="svg-icon svg-icon-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -163,13 +163,13 @@
                             <a href="{{ asset('uploads/internal_unit/' . $dokumen->file_dokumen) }}" type="button" class="btn btn-sm btn-light btn-active-primary" target="_blank" rel="noopener">
                                 <i class="fa fa-eye"></i> Lihat
                             </a>
-                            @if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+                            @if(auth()->user()->isSuperadmin())
                             <button type="button" class="btn btn-sm btn-light-warning" onclick="editDokumen({{ $dokumen->id_dokumen_internal_unit }})">
                                 <i class="fa fa-edit"></i> Edit
                             </button>
                             @endif
 
-                            @if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+                            @if(auth()->user()->isSuperadmin())
                             <button type="button" class="btn btn-sm btn-light-danger" onclick="deleteDokumen({{ $dokumen->id_dokumen_internal_unit }})">
                                 <i class="fa fa-trash"></i> Hapus
                             </button>
