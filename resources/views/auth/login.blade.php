@@ -19,7 +19,7 @@
             
             <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
                 <a href="#" class="mb-12">
-                    <img alt="Logo" src="{{ asset('assets/media/logos/logo-1.svg') }}" class="h-40px" />
+                    <img alt="Logo" src="{{ asset('assets/media/logos/logotebethitam.png') }}" class="h-70px" />
                 </a>
                 
                 <div class="w-lg-500px bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
@@ -74,11 +74,12 @@
                     </form>
 
                     <div class="text-center mt-10">
-                        <p class="text-gray-400 fw-bold fs-6">
+                        <!-- <p class="text-gray-400 fw-bold fs-6">
                             Demo Credentials:<br>
                             Superadmin: superadmin@gmail.com / 123<br>
-                            Petugas: petugas@gmail.com / 123
-                        </p>
+                            Petugas: petugas@gmail.com / 123 <br>
+                            Surveyor: surveyor@gmail.com / 123
+                        </p> -->
                     </div>
                 </div>
             </div>
