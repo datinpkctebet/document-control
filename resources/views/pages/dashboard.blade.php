@@ -44,9 +44,6 @@
                 <div class="text-white fw-bolder fs-2 mb-2 mt-5">{{ $totalDokumen }}</div>
                 <div class="fw-bold text-white">
                     Dokumen Terupload
-                    @if($kegiatanAktif)
-                    <div class="fs-8 opacity-75 mt-1">{{ $kegiatanAktif->nama_kegiatan }}</div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -195,7 +192,7 @@
                                 @if(auth()->user()->isSuperadmin())
                                     Anda memiliki akses penuh untuk mengelola master data dan dokumen.
                                 @elseif(auth()->user()->isPetugas())
-                                    Anda dapat mengupload dan mengelola dokumen kontrol.
+                                    Anda dapat melihat dokumen kontrol.
                                 @endif
                             </div>
                         </div>
