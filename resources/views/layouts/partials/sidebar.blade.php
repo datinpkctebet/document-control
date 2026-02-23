@@ -60,7 +60,7 @@
                     </a>
                 </div>
 
-                <!-- <div class="menu-item">
+                <div class="menu-item">
                     <a class="menu-link {{ request()->routeIs('dokumen.eksternal') ? 'active' : '' }}" href="{{ route('dokumen.eksternal') }}">
                         <span class="menu-icon">
                             <span class="svg-icon svg-icon-2">
@@ -72,10 +72,10 @@
                         </span>
                         <span class="menu-title">Dokumen Eksternal</span>
                     </a>
-                </div> -->
+                </div>
 
                 @if(auth()->user()->isSuperadmin())
-                <div class="menu-item pt-5">
+                <!-- <div class="menu-item pt-5">
                     <div class="menu-content">
                         <span class="menu-heading fw-bold text-uppercase fs-7">Master Data</span>
                     </div>
@@ -94,7 +94,7 @@
                         </span>
                         <span class="menu-title">Elemen Penilaian</span>
                     </a>
-                </div>
+                </div> -->
                 @endif
                 
             </div>

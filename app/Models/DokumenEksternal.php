@@ -9,41 +9,35 @@ class DokumenEksternal extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_dokumen_internal_unit';
-    protected $primaryKey = 'id_dokumen_internal_unit';
+    protected $table = 'tbl_dokumen_external';
+    protected $primaryKey = 'id_dokumen_external';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_jenis_dokumen_unit',
+        'id_jenis_dokumen',
         'id_pokja',
-        'id_pelayanan',
         'nama_dokumen',
         'no_dokumen',
-        'file_dokumen',
         'tahun_dokumen',
+        'tentang_dokumen',
+        'file_dokumen',
         'delete_at',
     ];
 
     protected $casts = [
         'created_time' => 'datetime',
-        'updated_time' => 'datetime',
+        'updated_created' => 'datetime',
     ];
 
-    // Relationship dengan Jenis Dokumen Unit
-    public function jenisDokumenUnit()
+    // Relationship dengan Jenis Dokumen
+    public function jenisDokumen()
     {
-        return $this->belongsTo(JenisDokumenUnit::class, 'id_jenis_dokumen_unit', 'id_jenis_dokumen_unit');
+        return $this->belongsTo(JenisDokumen::class, 'id_jenis_dokumen', 'id_jenis_dokumen');
     }
 
     // Relationship dengan Pokja
     public function pokja()
     {
         return $this->belongsTo(Pokja::class, 'id_pokja', 'id_pokja');
-    }
-
-    // Relationship dengan Pelayanan
-    public function pelayanan()
-    {
-        return $this->belongsTo(Pelayanan::class, 'id_pelayanan', 'id_pelayanan');
     }
 }

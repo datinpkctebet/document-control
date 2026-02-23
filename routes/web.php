@@ -46,11 +46,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/storeEksternal', [DokumenController::class, 'storeEksternal'])->name('storeEksternal');
         Route::post('/updateEksternal/{id}', [DokumenController::class, 'updateEksternal'])->name('updateEksternal');
         Route::delete('/destroyEksternal/{id}', [DokumenController::class, 'destroyEksternal'])->name('destroyEksternal');
+
+        Route::get('storage/eksternal/{filename}', function ($filename) {
+            $path = storage_path('app/public/uploads/eksternal/' . $filename);
+            if (!file_exists($path)) abort(404);
+            return response()->file($path);
+        })->where('filename', '.*');
         
         // AJAX endpoints for cascading dropdowns
         Route::get('/get-standar/{id_bab}', [DokumenController::class, 'getStandarByBab'])->name('get-standar');
         Route::get('/get-kriteria/{id_standar}', [DokumenController::class, 'getKriteriaByStandar'])->name('get-kriteria');
-        Route::get('/get-jenis-dokumen', [DokumenController::class, 'getJenisDokumen'])->name('get-jenis-dokumen');
+        Route::get('/get-jenis-dokumen-internal', [DokumenController::class, 'getJenisDokumenInternal'])->name('get-jenis-dokumen-internal');
+        Route::get('/get-jenis-dokumen-eksternal', [DokumenController::class, 'getJenisDokumenEksternal'])->name('get-jenis-dokumen-eksternal');
         Route::get('/get-klaster', [DokumenController::class, 'getKlaster'])->name('get-klaster');
         Route::get('/get-pelayanan', [DokumenController::class, 'getPelayanan'])->name('get-pelayanan');
         Route::get('/get-tahun-dokumen', [DokumenController::class, 'getTahunDokumen'])->name('get-tahun-dokumen');

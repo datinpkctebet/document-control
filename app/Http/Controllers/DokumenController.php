@@ -5,17 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\MasterElemenPenilaian;
-use App\Models\MasterBab;
-use App\Models\MasterStandar;
-use App\Models\MasterKriteria;
-use App\Models\AkreditasiDokumen;
-use App\Models\StandarAkreditasi;
-use App\Models\KegiatanAkreditasi;
-use App\Models\JenisDokumenStandar;
 use App\Models\DokumenInternal;
 use App\Models\DokumenEksternal;
 use App\Models\JenisDokumenUnit;
+use App\Models\JenisDokumen;
 use App\Models\Pokja;
 use App\Models\Pelayanan;
 
@@ -362,49 +355,34 @@ class DokumenController extends Controller
     {
         // Get filter parameters
         $filterJenisDokumen = $request->get('jenisDokumen');
-        $filterKlaster = $request->get('klaster');
-        $filterPelayanan = $request->get('pelayanan');
         $filterTahun = $request->get('tahun');
         $search = $request->get('search');
 
         // Get master data for filters
-        $listTahun = DokumenEksternal::where('delete_at', 0)->where('tahun_dokumen', '>=', 2024)->where('id_pelayanan', '!=', 0)->select('tahun_dokumen as tahun')->distinct()->orderBy('tahun_dokumen', 'desc')->get();
-        $listJenisDokumen = JenisDokumenUnit::where('delete_at', 0)->orderBy('jenis_dokumen')->get();
-        $listKlaster = Pokja::where('delete_at', 0)->orderBy('pokja')->get();
-        $listPelayanan = Pelayanan::where('delete_at', 0)->where('id_pokja', '>=', 5)->orderBy('jenis_pelayanan')->get();
+        $listJenisDokumen = JenisDokumen::where('delete_at', 0)->orderBy('jenis_dokumen')->get();
+        $listTahun = DokumenEksternal::where('delete_at', 0)->select('tahun_dokumen as tahun')->distinct()->orderBy('tahun_dokumen', 'desc')->get();
 
         // Query dokumen eksternal with filters
-        $query = DokumenEksternal::with(['jenisDokumenUnit', 'pokja', 'pelayanan'])
-        ->where('delete_at', 0)->where('tahun_dokumen', '>=', 2024)->where('id_pelayanan', '!=', 0); 
+        $query = DokumenEksternal::with(['jenisDokumen'])->where('delete_at', 0); 
 
         if ($filterJenisDokumen) {
-            $query->where('id_jenis_dokumen_unit', $filterJenisDokumen);
-        }
-
-        if ($filterKlaster) {
-            $query->where('id_pokja', $filterKlaster);
+            $query->where('id_jenis_dokumen', $filterJenisDokumen);
         }
 
         if ($filterTahun) {
             $query->where('tahun_dokumen', $filterTahun);
         }
 
-        if ($filterPelayanan) {
-            $query->where('id_pelayanan', $filterPelayanan);
-        }
-
         if ($search) {
             $query->where('nama_dokumen', 'like', '%' . $search . '%');
         }
 
-        $dokumenEksternal = $query->orderBy('id_dokumen_internal_unit', 'desc')->get();
+        $dokumenEksternal = $query->orderBy('tahun_dokumen', 'desc')->get();
 
         return view('pages.documents.indexEksternal', compact(
             'dokumenEksternal',
             'listTahun',
-            'listJenisDokumen',
-            'listKlaster',
-            'listPelayanan'
+            'listJenisDokumen'
         ));
     }
 
@@ -413,7 +391,7 @@ class DokumenController extends Controller
      */
     public function getDokumenEksternal($id)
     {
-        $dokumen = DokumenEksternal::where('id_dokumen_internal_unit', $id)
+        $dokumen = DokumenEksternal::where('id_dokumen_external', $id)
             ->where('delete_at', 0)
             ->orderBy('created_time', 'desc')
             ->get();
@@ -430,18 +408,16 @@ class DokumenController extends Controller
     public function storeEksternal(Request $request)
     {
         $request->validate([
-            'id_pokja' => 'required|exists:tbl_pokja,id_pokja',
-            'id_pelayanan' => 'required|exists:tbl_unit_pelayanan,id_pelayanan',
-            'id_jenis_dokumen_unit' => 'required|exists:tbl_jenis_dokumen_unit,id_jenis_dokumen_unit',
+            'id_jenis_dokumen' => 'required|exists:tbl_jenis_dokumen,id_jenis_dokumen',
             'no_dokumen' => 'nullable|string',
             'nama_dokumen' => 'required|string|max:250',
+            'tentang_dokumen' => 'required|string|max:500',
             'file_dokumen' => 'required|file|mimes:pdf|max:10240', // 10MB
         ], [
-            'id_pokja.required' => 'Klaster wajib dipilih',
-            'id_pelayanan.required' => 'Pelayanan wajib dipilih',
-            'id_jenis_dokumen_unit.required' => 'Jenis dokumen wajib dipilih',
+            'id_jenis_dokumen.required' => 'Jenis dokumen wajib dipilih',
             'no_dokumen.required' => 'Nomor dokumen wajib diisi',
             'nama_dokumen.required' => 'Nama dokumen wajib diisi',
+            'tentang_dokumen.required' => 'Tentang dokumen wajib diisi',
             'file_dokumen.required' => 'File dokumen wajib diupload',
             'file_dokumen.mimes' => 'File harus berformat: pdf',
             'file_dokumen.max' => 'Ukuran file maksimal 10MB',
@@ -460,17 +436,17 @@ class DokumenController extends Controller
                 $fileName = slug($originalName) . '-' . $timestamp . '-' . $hash . '.' . $extension;
                 
                 // Store file
-                $file->move(public_path('uploads/internal_unit'), $fileName);
+                $file->move(storage_path('app/public/uploads/eksternal'), $fileName);
             }
 
             // Create document record
-            $dokumen = DokumenInternal::create([
-                'id_pokja' => $request->id_pokja,
-                'id_pelayanan' => $request->id_pelayanan,
-                'id_jenis_dokumen_unit' => $request->id_jenis_dokumen_unit,
+            $dokumen = DokumenEksternal::create([
+                'id_pokja' => 0,
+                'id_jenis_dokumen' => $request->id_jenis_dokumen,
                 'tahun_dokumen' => $request->tahun_dokumen,
                 'no_dokumen' => $request->no_dokumen,
                 'nama_dokumen' => $request->nama_dokumen,
+                'tentang_dokumen' => $request->tentang_dokumen,
                 'file_dokumen' => $fileName,
                 'delete_at' => 0,
                 'created_time' => now(),
@@ -497,18 +473,16 @@ class DokumenController extends Controller
     public function updateEksternal(Request $request, $id)
     {
         $request->validate([
-            'edit_id_pokja' => 'required|exists:tbl_pokja,id_pokja',
-            'edit_id_pelayanan' => 'required|exists:tbl_unit_pelayanan,id_pelayanan',
-            'edit_id_jenis_dokumen_unit' => 'required|exists:tbl_jenis_dokumen_unit,id_jenis_dokumen_unit',
+            'edit_id_jenis_dokumen' => 'required|exists:tbl_jenis_dokumen,id_jenis_dokumen',
             'edit_no_dokumen' => 'required|string',
             'edit_nama_dokumen' => 'required|string|max:250',
+            'edit_tentang_dokumen' => 'required|string|max:500',
             'edit_file_dokumen' => 'nullable|file|mimes:pdf|max:10240', // 10MB
         ], [
-            'edit_id_pokja.required' => 'Klaster wajib dipilih',
-            'edit_id_pelayanan.required' => 'Pelayanan wajib dipilih',
-            'edit_id_jenis_dokumen_unit.required' => 'Jenis dokumen wajib dipilih',
+            'edit_id_jenis_dokumen.required' => 'Jenis dokumen wajib dipilih',
             'edit_no_dokumen.required' => 'Nomor dokumen wajib diisi',
             'edit_nama_dokumen.required' => 'Nama dokumen wajib diisi',
+            'edit_tentang_dokumen.required' => 'Tentang dokumen wajib diisi',
             'edit_file_dokumen.mimes' => 'File harus berformat: pdf',
             'edit_file_dokumen.max' => 'Ukuran file maksimal 10MB',
         ]);
@@ -518,8 +492,8 @@ class DokumenController extends Controller
 
             // Handle file upload if new file provided
             if ($request->hasFile('edit_file_dokumen')) {
-                $filePath = public_path('uploads/eksternal/' . $replace);
-                $filePath = public_path('uploads/internal_unit/' . $replace);
+                $replace = str_replace(':', '_', $dokumen->file_dokumen);
+                $filePath = storage_path('app/public/uploads/eksternal/' . $replace);
 
                 // Delete old file
                 if (file_exists($filePath)) {
@@ -536,19 +510,19 @@ class DokumenController extends Controller
                 $fileName = slug($originalName) . '-' . $timestamp . '-' . $hash . '.' . $extension;
                 
                 // Store file
-                $file->move(public_path('uploads/internal_unit'), $fileName);
+                $file->move(storage_path('app/public/uploads/eksternal'), $fileName);
 
                 $dokumen->file_dokumen = $fileName;
             }
 
             // Update document record
             $dokumen->update([
-                'id_pokja' => $request->edit_id_pokja,
-                'id_pelayanan' => $request->edit_id_pelayanan,
-                'id_jenis_dokumen_unit' => $request->edit_id_jenis_dokumen_unit,
+                'id_pokja' => 0,
+                'id_jenis_dokumen' => $request->edit_id_jenis_dokumen,
                 'tahun_dokumen' => $request->edit_tahun_dokumen,
                 'no_dokumen' => $request->edit_no_dokumen,
                 'nama_dokumen' => $request->edit_nama_dokumen,
+                'tentang_dokumen' => $request->edit_tentang_dokumen,
                 'delete_at' => 0,
                 'updated_time' => now(),
             ]);
@@ -597,9 +571,22 @@ class DokumenController extends Controller
     /**
      * Get jenis dokumen (AJAX)
      */
-    public function getJenisDokumen()
+    public function getJenisDokumenInternal()
     {
         $jenisDokumen = JenisDokumenUnit::where('delete_at', 0)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $jenisDokumen
+        ]);
+    }
+
+    /**
+     * Get jenis dokumen eksternal (AJAX)
+     */
+    public function getJenisDokumenEksternal()
+    {
+        $jenisDokumen = JenisDokumen::where('delete_at', 0)->get();
 
         return response()->json([
             'success' => true,
@@ -639,6 +626,10 @@ class DokumenController extends Controller
     public function getTahunDokumen()
     {
         $tahunDokumen = [
+            ['tahun_dokumen' => 2019],
+            ['tahun_dokumen' => 2020],
+            ['tahun_dokumen' => 2021],
+            ['tahun_dokumen' => 2022],
             ['tahun_dokumen' => 2023],
             ['tahun_dokumen' => 2024],
             ['tahun_dokumen' => 2025],

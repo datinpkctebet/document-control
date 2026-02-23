@@ -5,7 +5,7 @@
 @section('page_description', 'Kelola dokumen eksternal')
 
 @section('toolbar_actions')
-@if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+@if(auth()->user()->isSuperadmin())
 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadDokumen">
     <span class="svg-icon svg-icon-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -52,31 +52,11 @@
                     
                     <div class="px-7 py-5" data-kt-customer-table-filter="form">
                         <div class="mb-10">
-                            <label class="form-label fs-6 fw-bold">Klaster:</label>
-                            <select class="form-select form-select-solid fw-bolder" id="filterKlaster" data-kt-select2="true" data-placeholder="Pilih Klaster" data-allow-clear="true" data-kt-customer-table-filter="klaster" data-dropdown-parent="#kt-toolbar-filter">
-                                <option value="">Semua Klaster</option>
-                                @foreach($listKlaster as $klaster)
-                                <option value="{{ $klaster->id_pokja }}">{{ $klaster->pokja }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-10">
-                            <label class="form-label fs-6 fw-bold">Pelayanan:</label>
-                            <select class="form-select form-select-solid fw-bolder" id="filterPelayanan" data-kt-select2="true" data-placeholder="Pilih Pelayanan" data-allow-clear="true" data-kt-customer-table-filter="pelayanan" data-dropdown-parent="#kt-toolbar-filter">
-                                <option value="">Semua Pelayanan</option>
-                                @foreach($listPelayanan as $pelayanan)
-                                <option value="{{ $pelayanan->id_pelayanan }}">{{ $pelayanan->jenis_pelayanan }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-10">
                             <label class="form-label fs-6 fw-bold">Jenis Dokumen:</label>
                             <select class="form-select form-select-solid fw-bolder" id="filterJenisDokumen" data-kt-select2="true" data-placeholder="Pilih Jenis Dokumen" data-allow-clear="true" data-kt-customer-table-filter="jenisDokumen" data-dropdown-parent="#kt-toolbar-filter">
                                 <option value="">Semua Jenis Dokumen</option>
                                 @foreach($listJenisDokumen as $jenisDokumen)
-                                <option value="{{ $jenisDokumen->id_jenis_dokumen_unit }}">{{ $jenisDokumen->jenis_dokumen }}</option>
+                                <option value="{{ $jenisDokumen->id_jenis_dokumen }}">{{ $jenisDokumen->jenis_dokumen }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -106,10 +86,9 @@
             <table class="table align-middle table-row-dashed fs-6 gy-5" id="documentsTable">
                 <thead>
                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                        <th class="min-w-50px">KLASTER</th>
-                        <th class="min-w-50px">PELAYANAN</th>
                         <th class="min-w-50px">JENIS DOKUMEN</th>
                         <th class="min-w-50px">NAMA DOKUMEN</th>
+                        <th class="min-w-50px">TENTANG DOKUMEN</th>
                         <th class="min-w-50px">TAHUN DOKUMEN</th>
                         <th class="min-w-50px">NO DOKUMEN</th>
                         <th class="min-w-100px text-center">AKSI</th>
@@ -120,23 +99,9 @@
                     @forelse($dokumenEksternal as $index => $dokumen)
                     <tr>
                         <td>
-                            <div style="max-width: 150px;" data-bs-toggle="tooltip" title="{{ $dokumen->pokja->pokja ?? '-' }}">
-                                {{ 
-                                    $dokumen->pokja->pokja ? $dokumen->pokja->pokja : '-'
-                                }}
-                            </div>
-                        </td>
-                        <td>
-                            <div style="max-width: 250px;" data-bs-toggle="tooltip" title="{{ $dokumen->pelayanan->jenis_pelayanan ?? '-' }}">
-                                {{ 
-                                    $dokumen->pelayanan->jenis_pelayanan ? $dokumen->pelayanan->jenis_pelayanan : '-'
-                                }}
-                            </div>
-                        </td>
-                        <td>
-                            <div style="max-width: 250px;" data-bs-toggle="tooltip" title="{{ $dokumen->jenisDokumenUnit->jenis_dokumen ?? '-' }}">
+                            <div style="max-width: 250px;" data-bs-toggle="tooltip" title="{{ $dokumen->jenisDokumen->jenis_dokumen ?? '-' }}">
                                 {{
-                                    $dokumen->jenisDokumenUnit->jenis_dokumen ? $dokumen->jenisDokumenUnit->jenis_dokumen : '-'
+                                    $dokumen->jenisDokumen->jenis_dokumen ? $dokumen->jenisDokumen->jenis_dokumen : '-'
                                 }}
                             </div>
                         </td>
@@ -144,6 +109,13 @@
                             <div style="max-width: 400px;" data-bs-toggle="tooltip" title="{{ $dokumen->nama_dokumen ?? '-' }}">
                                 {{
                                     $dokumen->nama_dokumen ? $dokumen->nama_dokumen : '-'
+                                }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="max-width: 400px;" data-bs-toggle="tooltip" title="{{ $dokumen->tentang_dokumen ?? '-' }}">
+                                {{
+                                    $dokumen->tentang_dokumen ? $dokumen->tentang_dokumen : '-'
                                 }}
                             </div>
                         </td>
@@ -160,16 +132,16 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            <a href="{{ asset('uploads/eksternal/' . $dokumen->file_dokumen) }}" type="button" class="btn btn-sm btn-light btn-active-primary" target="_blank" rel="noopener">
+                            <a href="{{ url('dokumen/storage/eksternal/' . $dokumen->file_dokumen) }}" type="button" class="btn btn-sm btn-light btn-active-primary" target="_blank" rel="noopener">
                                 <i class="fa fa-eye"></i> Lihat
                             </a>
-                            @if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+                            @if(auth()->user()->isSuperadmin())
                             <button type="button" class="btn btn-sm btn-light-warning" onclick="editDokumen({{ $dokumen->id_dokumen_external }})">
                                 <i class="fa fa-edit"></i> Edit
                             </button>
                             @endif
 
-                            @if(auth()->user()->isPetugas() || auth()->user()->isSuperadmin())
+                            @if(auth()->user()->isSuperadmin())
                             <button type="button" class="btn btn-sm btn-light-danger" onclick="deleteDokumen({{ $dokumen->id_dokumen_external }})">
                                 <i class="fa fa-trash"></i> Hapus
                             </button>
@@ -206,24 +178,9 @@
             <form id="formUploadDokumen" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
-                    
-                    <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Klaster</label>
-                        <select class="form-select form-select-solid" name="id_pokja" id="upload_klaster" required>
-                            <option value="">Pilih Klaster</option>
-                        </select>
-                    </div>
-                    
-                    <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Pelayanan</label>
-                        <select class="form-select form-select-solid" name="id_pelayanan" id="upload_pelayanan" required>
-                            <option value="">Pilih Pelayanan</option>
-                        </select>
-                    </div>
-
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-6 mb-2">Jenis Dokumen</label>
-                        <select class="form-select form-select-solid" name="id_jenis_dokumen_unit" id="upload_jenis_dokumen" required>
+                        <select class="form-select form-select-solid" name="id_jenis_dokumen" id="upload_jenis_dokumen" required>
                             <option value="">Pilih Jenis Dokumen</option>
                         </select>
                     </div>
@@ -236,13 +193,18 @@
                     </div>
 
                     <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Nomor Dokumen</label>
-                        <input type="text" name="no_dokumen" class="form-control form-control-solid" placeholder="Masukkan nomor dokumen" required />
+                        <label class="fw-bold fs-6 mb-2">Nomor Dokumen</label>
+                        <input type="text" name="no_dokumen" class="form-control form-control-solid" placeholder="Masukkan nomor dokumen" />
                     </div>
 
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-6 mb-2">Nama Dokumen</label>
                         <input type="text" name="nama_dokumen" class="form-control form-control-solid" placeholder="Masukkan nama dokumen" required />
+                    </div>
+
+                    <div class="fv-row mb-7">
+                        <label class="fw-bold fs-6 mb-2">Tentang Dokumen</label>
+                        <textarea name="tentang_dokumen" id="upload_tentang_dokumen" class="form-control form-control-solid" placeholder="Masukkan tentang dokumen"></textarea>
                     </div>
 
                     <div class="fv-row mb-7">
@@ -285,24 +247,10 @@
                 @csrf
                 <input type="hidden" name="id_dokumen" id="edit_id_dokumen">
                 
-                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">                    
-                    <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Klaster</label>
-                        <select class="form-select form-select-solid" name="edit_id_pokja" id="edit_klaster" required>
-                            <option value="">Pilih Klaster</option>
-                        </select>
-                    </div>
-                    
-                    <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Pelayanan</label>
-                        <select class="form-select form-select-solid" name="edit_id_pelayanan" id="edit_pelayanan" required>
-                            <option value="">Pilih Pelayanan</option>
-                        </select>
-                    </div>
-
+                <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-6 mb-2">Jenis Dokumen</label>
-                        <select class="form-select form-select-solid" name="edit_id_jenis_dokumen_unit" id="edit_jenis_dokumen" required>
+                        <select class="form-select form-select-solid" name="edit_id_jenis_dokumen" id="edit_jenis_dokumen" required>
                             <option value="">Pilih Jenis Dokumen</option>
                         </select>
                     </div>
@@ -315,13 +263,18 @@
                     </div>
 
                     <div class="fv-row mb-7">
-                        <label class="required fw-bold fs-6 mb-2">Nomor Dokumen</label>
-                        <input type="text" name="edit_no_dokumen" id="edit_nomor_dokumen" class="form-control form-control-solid" placeholder="Masukkan nomor dokumen" required />
+                        <label class="fw-bold fs-6 mb-2">Nomor Dokumen</label>
+                        <input type="text" name="edit_no_dokumen" id="edit_nomor_dokumen" class="form-control form-control-solid" placeholder="Masukkan nomor dokumen"/>
                     </div>
 
                     <div class="fv-row mb-7">
                         <label class="required fw-bold fs-6 mb-2">Nama Dokumen</label>
                         <input type="text" name="edit_nama_dokumen" id="edit_nama_dokumen" class="form-control form-control-solid" placeholder="Masukkan nama dokumen" required />
+                    </div>
+
+                    <div class="fv-row mb-7">
+                        <label class="fw-bold fs-6 mb-2">Tentang Dokumen</label>
+                        <textarea name="edit_tentang_dokumen" id="edit_tentang_dokumen" class="form-control form-control-solid" placeholder="Masukkan tentang dokumen"></textarea>
                     </div>
 
                     <div class="fv-row mb-7">
@@ -381,7 +334,7 @@ $(document).ready(function() {
     });
 
     // Initialize Select2
-    $('#filterKlaster, #filterPelayanan, #filterJenisDokumen, #filterTahun, #upload_klaster, #edit_klaster, #upload_pelayanan, #edit_pelayanan, #upload_tahun_dokumen, #edit_tahun_dokumen, #upload_jenis_dokumen, #edit_jenis_dokumen').select2();
+    $('#filterJenisDokumen, #filterTahun, #upload_tahun_dokumen, #edit_tahun_dokumen, #upload_jenis_dokumen, #edit_jenis_dokumen').select2();
 
     // Initialize Select2 in modals
     $('#modalUploadDokumen, #modalEditDokumen').on('shown.bs.modal', function () {
@@ -390,23 +343,17 @@ $(document).ready(function() {
         });
     });
 
-    // Load klaster, pelayanan, jenis dokumen on page load
-    loadKlaster();
-    loadPelayanan();
+    // Load Jenis dokumen dan Tahun on page load
     loadJenisDokumen();
     loadTahunDokumen();
 
     // Apply filter
     $('#applyFilter').on('click', function() {
-        let klaster = $('#filterKlaster').val();
-        let pelayanan = $('#filterPelayanan').val();
         let jenisDokumen = $('#filterJenisDokumen').val();
         let tahun = $('#filterTahun').val();
         
         let url = '{{ route("dokumen.eksternal") }}?';
         if (tahun) url += 'tahun=' + tahun + '&';
-        if (klaster) url += 'klaster=' + klaster + '&';
-        if (pelayanan) url += 'pelayanan=' + pelayanan + '&';
         if (jenisDokumen) url += 'jenisDokumen=' + jenisDokumen + '&';
         
         window.location.href = url;
@@ -558,50 +505,16 @@ $(document).ready(function() {
     $('[data-bs-toggle="tooltip"]').tooltip();
 });
 
-// Load Klaster
-function loadKlaster() {
-    $.ajax({
-        url: '{{ route("dokumen.get-klaster") }}',
-        type: 'GET',
-        success: function(response) {
-            if (response.success) {
-                let options = '<option value="">Pilih Klaster</option>';
-                response.data.forEach(function(item) {
-                    options += `<option value="${item.id_pokja}">${item.pokja}</option>`;
-                });
-                $('#upload_klaster, #edit_klaster').html(options);
-            }
-        }
-    });
-}
-
-// Load Pelayanan
-function loadPelayanan() {
-    $.ajax({
-        url: '{{ route("dokumen.get-pelayanan") }}',
-        type: 'GET',
-        success: function(response) {
-            if (response.success) {
-                let options = '<option value="">Pilih Pelayanan</option>';
-                response.data.forEach(function(item) {
-                    options += `<option value="${item.id_pelayanan}">${item.jenis_pelayanan}</option>`;
-                });
-                $('#upload_pelayanan, #edit_pelayanan').html(options);
-            }
-        }
-    });
-}
-
 // Load Jenis Dokumen
 function loadJenisDokumen() {
     $.ajax({
-        url: '{{ route("dokumen.get-jenis-dokumen") }}',
+        url: '{{ route("dokumen.get-jenis-dokumen-eksternal") }}',
         type: 'GET',
         success: function(response) {
             if (response.success) {
                 let options = '<option value="">Pilih Jenis Dokumen</option>';
                 response.data.forEach(function(item) {
-                    options += `<option value="${item.id_jenis_dokumen_unit}">${item.jenis_dokumen}</option>`;
+                    options += `<option value="${item.id_jenis_dokumen}">${item.jenis_dokumen}</option>`;
                 });
                 $('#upload_jenis_dokumen, #edit_jenis_dokumen').html(options);
             }
@@ -641,15 +554,13 @@ function editDokumen(dokumenId) {
         success: function(response) {
             if (response.success) {
                 let dokumen = response.data.find(item => item.id_dokumen_external == dokumenId);
-                console.log(dokumen);
                 if (dokumen) {
                     $('#edit_id_dokumen').val(dokumen.id_dokumen_external);
-                    $('#edit_klaster').val(dokumen.id_pokja).trigger('change');
-                    $('#edit_pelayanan').val(dokumen.id_pelayanan).trigger('change');
-                    $('#edit_jenis_dokumen').val(dokumen.id_jenis_dokumen_unit).trigger('change');
+                    $('#edit_jenis_dokumen').val(dokumen.id_jenis_dokumen).trigger('change');
                     $('#edit_tahun_dokumen').val(dokumen.tahun_dokumen).trigger('change');
                     $('#edit_nomor_dokumen').val(dokumen.no_dokumen);
                     $('#edit_nama_dokumen').val(dokumen.nama_dokumen);
+                    $('#edit_tentang_dokumen').val(dokumen.tentang_dokumen);
                     $('#current_file_info').html(`<small class="text-muted">File saat ini: ${dokumen.file_dokumen}</small>`);
                     
                     $('#modalEditDokumen').modal('show');

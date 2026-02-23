@@ -595,7 +595,7 @@ function loadPelayanan() {
 // Load Jenis Dokumen
 function loadJenisDokumen() {
     $.ajax({
-        url: '{{ route("dokumen.get-jenis-dokumen") }}',
+        url: '{{ route("dokumen.get-jenis-dokumen-internal") }}',
         type: 'GET',
         success: function(response) {
             if (response.success) {

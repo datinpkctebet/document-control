@@ -59,12 +59,12 @@
                             <input class="form-control form-control-lg form-control-solid" type="password" name="password" autocomplete="off" required />
                         </div>
 
-                        <div class="fv-row mb-10">
+                        <!-- <div class="fv-row mb-10">
                             <label class="form-check form-check-custom form-check-solid">
                                 <input class="form-check-input" type="checkbox" name="remember" value="1" />
                                 <span class="form-check-label fw-bold text-gray-700 fs-6">Remember me</span>
                             </label>
-                        </div>
+                        </div> -->
                         
                         <div class="text-center">
                             <button type="submit" class="btn btn-lg btn-primary w-100 mb-5">
