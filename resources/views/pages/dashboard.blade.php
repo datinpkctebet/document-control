@@ -41,27 +41,29 @@
                         <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="white" />
                     </svg>
                 </span>
-                <div class="text-white fw-bolder fs-2 mb-2 mt-5">{{ $totalDokumen }}</div>
+                <div class="text-white fw-bolder fs-2 mb-2 mt-5">{{ $totalDokumenInternal }}</div>
                 <div class="fw-bold text-white">
                     Dokumen Terupload
+                    <div class="fs-8 opacity-75 mt-1">Dokumen Internal</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-xl-6">
-        <div class="card card-xl-stretch mb-xl-8" style="background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);">
+        <div class="card card-xl-stretch mb-5 mb-xl-8" style="background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);">
             <div class="card-body">
                 <span class="svg-icon svg-icon-white svg-icon-3x ms-n1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M16.0173 9H15.3945C14.2833 9 13.263 9.61425 12.7431 10.5963L12.154 11.7091C12.0645 11.8781 12.1072 12.0868 12.2559 12.2071L12.6402 12.5183C13.2631 13.0225 13.7556 13.6691 14.0764 14.4035L14.2321 14.7601C14.2957 14.9058 14.4396 15 14.5987 15H18.6747C19.7297 15 20.4057 13.8774 19.912 12.945L18.6686 10.5963C18.1487 9.61425 17.1285 9 16.0173 9Z" fill="white" />
-                        <rect opacity="0.3" x="14" y="4" width="4" height="4" rx="2" fill="white" />
-                        <path d="M4.65486 14.8559C5.40389 13.1224 7.11161 12 9 12C10.8884 12 12.5961 13.1224 13.3451 14.8559L14.793 18.2067C15.3636 19.5271 14.3955 21 12.9571 21H5.04292C3.60453 21 2.63644 19.5271 3.20698 18.2067L4.65486 14.8559Z" fill="white" />
-                        <rect opacity="0.3" x="6" y="5" width="6" height="6" rx="3" fill="white" />
+                        <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="white" />
+                        <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="white" />
                     </svg>
                 </span>
-                <div class="text-white fw-bolder fs-2 mb-2 mt-5">{{ $totalUsers }}</div>
-                <div class="fw-bold text-white">Total Pengguna</div>
+                <div class="text-white fw-bolder fs-2 mb-2 mt-5">{{ $totalDokumenEksternal }}</div>
+                <div class="fw-bold text-white">
+                    Dokumen Terupload
+                    <div class="fs-8 opacity-75 mt-1">Dokumen Eksternal</div>
+                </div>
             </div>
         </div>
     </div>
