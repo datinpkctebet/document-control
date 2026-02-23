@@ -83,7 +83,7 @@
                 <div class="row g-5">
                     
                     <div class="col-md-6">
-                        <a href="{{ route('dokumen.index') }}" class="card card-stretch border hover-elevate-up shadow-sm">
+                        <a href="{{ route('dokumen.internal') }}" class="card card-stretch border hover-elevate-up shadow-sm">
                             <div class="card-body d-flex align-items-center py-8">
                                 <div class="symbol symbol-60px me-5">
                                     <span class="symbol-label bg-light-primary">
