@@ -160,7 +160,7 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            <a href="{{ asset('storage/uploads/internal_unit/' . $dokumen->file_dokumen) }}" type="button" class="btn btn-sm btn-light btn-active-primary" target="_blank" rel="noopener">
+                            <a href="{{ url('dokumen/storage/internal_unit/' . $dokumen->file_dokumen) }}" type="button" class="btn btn-sm btn-light btn-active-primary" target="_blank" rel="noopener">
                                 <i class="fa fa-eye"></i> Lihat
                             </a>
                             @if(auth()->user()->isSuperadmin())

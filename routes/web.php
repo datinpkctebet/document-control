@@ -34,6 +34,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/storeInternal', [DokumenController::class, 'storeInternal'])->name('storeInternal');
         Route::post('/updateInternal/{id}', [DokumenController::class, 'updateInternal'])->name('updateInternal');
         Route::delete('/destroyInternal/{id}', [DokumenController::class, 'destroyInternal'])->name('destroyInternal');
+
+        Route::get('storage/internal_unit/{filename}', function ($filename) {
+            $path = storage_path('app/public/uploads/internal_unit/' . $filename);
+            if (!file_exists($path)) abort(404);
+            return response()->file($path);
+        })->where('filename', '.*');
         
         Route::get('/eksternal', [DokumenController::class, 'indexEksternal'])->name('eksternal');
         Route::get('/get-dokumenEksternal/{id}', [DokumenController::class, 'getDokumenEksternal'])->name('getEksternal');
