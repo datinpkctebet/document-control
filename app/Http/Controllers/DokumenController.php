@@ -219,7 +219,7 @@ class DokumenController extends Controller
                 $fileName = slug($originalName) . '-' . $timestamp . '-' . $hash . '.' . $extension;
                 
                 // Store file
-                $file->move(public_path('storage/uploads/internal_unit'), $fileName);
+                $file->move(storage_path('app/public/uploads/internal_unit'), $fileName);
             }
 
             // Create document record
@@ -278,7 +278,7 @@ class DokumenController extends Controller
             // Handle file upload if new file provided
             if ($request->hasFile('edit_file_dokumen')) {
                 $replace = str_replace(':', '_', $dokumen->file_dokumen);
-                $filePath = public_path('storage/uploads/internal_unit/' . $replace);
+                $filePath = storage_path('app/public/uploads/internal_unit/' . $replace);
 
                 // Delete old file
                 if (file_exists($filePath)) {
